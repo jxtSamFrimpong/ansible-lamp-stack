@@ -1,4 +1,3 @@
-# roles/lamp_stack/handlers/main.yml
 ---
 - name: Restart Apache
   service:

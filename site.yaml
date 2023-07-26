@@ -1,3 +1,2 @@
-# site.yml
 ---
 - import_playbook: lamp.yaml
