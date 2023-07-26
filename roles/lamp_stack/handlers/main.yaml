@@ -1,0 +1,6 @@
+# roles/lamp_stack/handlers/main.yml
+---
+- name: Restart Apache
+  service:
+    name: apache2
+    state: restarted
