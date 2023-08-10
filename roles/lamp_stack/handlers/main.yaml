@@ -3,3 +3,9 @@
   service:
     name: apache2
     state: restarted
+  environment:
+    DB_PASS: "{{ vault_mysql_root_password }}"
+- name: Restart mysql
+  service:
+    name: mysql
+    state: restarted

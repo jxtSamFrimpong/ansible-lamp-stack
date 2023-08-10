@@ -1,5 +1,8 @@
 ---
-- hosts: centrifuge
+- hosts: webservers
   become: true
+  gather_facts: no
   roles:
     - lamp_stack
+  vars_files:
+    - ./vault.yaml

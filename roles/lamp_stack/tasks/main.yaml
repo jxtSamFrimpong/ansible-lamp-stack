@@ -1,4 +1,7 @@
 ---
+- name: Upgrade all apt packages
+  apt: upgrade=dist force_apt_get=yes
+  
 - name: Install Apache
   apt:
     name: apache2
@@ -7,9 +10,18 @@
 - name: Install MySQL
   apt:
     name: mysql-server
-    state: latest
+    state: present
   vars:
-    mysql_root_password: "{{ mysql_root_password }}"
+    mysql_root_password: "{{ vault_mysql_root_password }}"
+  
+- name: Enable remote login to mysql
+  lineinfile:
+      path: /etc/mysql/mysql.conf.d/mysqld.cnf
+      regexp: '^bind-address'
+      line: 'bind-address = 0.0.0.0'
+      backup: yes
+  notify:
+      - Restart mysql
 
 - name: Install PHP and required modules
   apt:
@@ -23,10 +35,16 @@
     - Restart Apache
 - name: Clone Vulnerable-Web-Application GitHub repository
   git:
-    repo: "https://github.com/OWASP/Vulnerable-Web-Application.git"
+    repo: "https://github.com/jxtSamFrimpong/Vulnerable-Web-Application.git"
     dest: "/var/www/html/Vulnerable-Web-Application"
     version: master
   notify:
+    - Restart Apache
+- name: Replace Database Password
+  shell: "echo $DB_PASS"
+  environment:
+    DB_PASS: "{{ vault_mysql_root_password }}"
+  notify: 
     - Restart Apache
 
 - name: Enable Apache rewrite module
